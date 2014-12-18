@@ -49,6 +49,8 @@ module MoneyRails
             name = [subunit_name, "money"].join("_")
           end
 
+          bank = options[:bank] || Money.default_bank
+
           # Create a reverse mapping of the monetized attributes
           @monetized_attributes ||= {}
           @monetized_attributes[name.to_sym] = subunit_name
@@ -125,8 +127,9 @@ module MoneyRails
             return memoized if memoized && memoized.cents == amount &&
               memoized.currency == attr_currency
 
+
             # If amount is NOT nil (or empty string) load the amount in a Money
-            amount = Money.new(amount, attr_currency) unless amount.blank?
+            amount = Money.new(amount, attr_currency, bank) unless amount.blank?
 
             # Cache and return the value (it may be nil)
             instance_variable_set "@#{name}", amount
